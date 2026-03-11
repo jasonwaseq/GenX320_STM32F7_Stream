@@ -1,0 +1,12 @@
+../../Middlewares/ST/touchgfx/framework/include/touchgfx/Screen.hpp:104:18:virtual void touchgfx::Screen::afterTransition()	0	static
+../../Middlewares/ST/touchgfx/framework/include/touchgfx/Screen.hpp:154:18:virtual void touchgfx::Screen::handleKeyEvent(uint8_t)	0	static
+C:/Users/jason/Documents/GenX320_stream/TouchGFX/gui/src/screen_1_screen/Screen_1View.cpp:28:6:virtual void Screen_1View::tearDownScreen()	0	static
+C:/Users/jason/Documents/GenX320_stream/TouchGFX/gui/src/screen_1_screen/Screen_1View.cpp:74:6:virtual void Screen_1View::screenInit()	0	static
+C:/Users/jason/Documents/GenX320_stream/TouchGFX/gui/src/screen_1_screen/Screen_1View.cpp:66:6:virtual void Screen_1View::updateScreen()	0	static
+../../TouchGFX/gui/include/gui/screen_1_screen/Screen_1View.hpp:11:13:Screen_1View::~Screen_1View()	8	static
+../../TouchGFX/gui/include/gui/screen_1_screen/Screen_1View.hpp:11:13:virtual Screen_1View::~Screen_1View()	8	static
+C:/Users/jason/Documents/GenX320_stream/TouchGFX/gui/src/screen_1_screen/Screen_1View.cpp:83:6:virtual void Screen_1View::checkI2CStatus()	16	static
+C:/Users/jason/Documents/GenX320_stream/TouchGFX/gui/src/screen_1_screen/Screen_1View.cpp:36:6:virtual void Screen_1View::handleClickEvent(const touchgfx::ClickEvent&)	8	static
+C:/Users/jason/Documents/GenX320_stream/TouchGFX/gui/src/screen_1_screen/Screen_1View.cpp:18:1:Screen_1View::Screen_1View()	8	static
+C:/Users/jason/Documents/GenX320_stream/TouchGFX/gui/src/screen_1_screen/Screen_1View.cpp:23:6:virtual void Screen_1View::setupScreen()	0	static
+C:/Users/jason/Documents/GenX320_stream/TouchGFX/gui/src/screen_1_screen/Screen_1View.cpp:99:6:virtual void Screen_1View::updateEvents()	24	static
