@@ -9,8 +9,10 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include Middlewares/USB_Device_Library/subdir.mk
 -include Middlewares/FreeRTOS/subdir.mk
+-include Middlewares/USB_Device_Library/subdir.mk
+-include Application/User/USB_DEVICE/App/subdir.mk
+-include Application/User/USB_DEVICE/Target/subdir.mk
 -include Drivers/product-genx-ctrl/src/subdir.mk
 -include Drivers/STM32F7xx_HAL_Driver/subdir.mk
 -include Drivers/Components/subdir.mk
@@ -20,8 +22,6 @@ RM := rm -rf
 -include Application/User/gui/subdir.mk
 -include Application/User/generated/subdir.mk
 -include Application/User/firmware/subdir.mk
--include Application/User/USB_DEVICE/Target/subdir.mk
--include Application/User/USB_DEVICE/App/subdir.mk
 -include Application/User/TouchGFX/target/generated/subdir.mk
 -include Application/User/TouchGFX/target/subdir.mk
 -include Application/User/TouchGFX/App/subdir.mk

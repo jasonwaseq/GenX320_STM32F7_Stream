@@ -44,8 +44,6 @@ Application/User/Startup \
 Application/User/TouchGFX/App \
 Application/User/TouchGFX/target \
 Application/User/TouchGFX/target/generated \
-Application/User/USB_DEVICE/App \
-Application/User/USB_DEVICE/Target \
 Application/User/firmware \
 Application/User/generated \
 Application/User/gui \
@@ -56,5 +54,4 @@ Drivers/Components \
 Drivers/STM32F7xx_HAL_Driver \
 Drivers/product-genx-ctrl/src \
 Middlewares/FreeRTOS \
-Middlewares/USB_Device_Library \
 

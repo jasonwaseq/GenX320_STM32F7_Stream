@@ -122,11 +122,15 @@ void disable_hot_pixels(uint8_t *histogram) {
 }
 
 /**
- * @brief Function to decode EVT2.0.
- * @param Value to be decoded
+ * @brief Function to decode one EVT2.0 word into a frame buffer.
+ * @param val   Raw EVT2.0 word
+ * @param fb    Frame buffer to write into (snapshot taken before the batch)
+ *
+ * x and y are intentionally local (not static) — carrying stale coordinates
+ * across a buffer swap is the primary cause of display corruption.
  */
-static void decode_evt2(const uint32_t val) {
-	static uint32_t x,y;
+static void decode_evt2(const uint32_t val, uint8_t *fb) {
+	uint32_t x, y;
 
 	switch( __EVT20_TYPE(val)) {
 	case TD_LOW:
@@ -137,7 +141,7 @@ static void decode_evt2(const uint32_t val) {
 		if(histogram[y+x*320] < 255) histogram[y+x*320]++;
 #endif
 		if( x < WIDTH && y < HEIGHT) {
-			fb_cpi[x+y*WIDTH] = COLOR_OFF;
+			fb[x+y*WIDTH] = COLOR_OFF;
 		}
 		evt_statistics[0] ++;
 		break;
@@ -145,25 +149,20 @@ static void decode_evt2(const uint32_t val) {
 	case TD_HIGH:
 	{
 		y = __EVT20_X(val);
-		x =  __EVT20_Y(val);
+		x = __EVT20_Y(val);
 #if( configCALIBRATE_SENSOR == 1 )
 		if(histogram[y+x*320] < 255) histogram[y+x*320]++;
 #endif
 		if( x < WIDTH && y < HEIGHT) {
-			fb_cpi[x+y*WIDTH] = COLOR_ON;
+			fb[x+y*WIDTH] = COLOR_ON;
 		}
 		evt_statistics[1] ++;
 		break;
 	}
-
-	case (EV_TIME_HIGH):
-			{
+	case EV_TIME_HIGH:
 		break;
-			}
-	case (EXT_TRIGGER):
-			{
+	case EXT_TRIGGER:
 		break;
-			}
 	default:
 		break;
 	}
@@ -221,19 +220,26 @@ void task_evt_decoder(const args_evt_decoder_t *args) {
 		uint32_t dma_idx = TX_SIZE - args->hdma_dcmi->Instance->NDTR;
 
 		if (dma_read_idx == dma_idx) {
-			vTaskDelay( 3 / portTICK_PERIOD_MS);
+			vTaskDelay(pdMS_TO_TICKS(3));
 			continue;
 		}
 
+		/* Snapshot fb_cpi once for the entire batch.
+		 * task_update_fb swaps fb_cpi atomically inside a critical section;
+		 * by reading it once here all pixels in this batch go to the same
+		 * buffer, eliminating cross-buffer pixel scatter (the primary cause
+		 * of display static). */
+		uint8_t *fb = fb_cpi;
+
 		if(dma_read_idx > dma_idx) {
 			while (dma_read_idx < TX_SIZE) {
-				decode_evt2(event_buffer[dma_read_idx++]);
+				decode_evt2(event_buffer[dma_read_idx++], fb);
 			}
 			dma_read_idx = 0;
 		}
 
 		while (dma_read_idx < dma_idx) {
-			decode_evt2(event_buffer[dma_read_idx++]);
+			decode_evt2(event_buffer[dma_read_idx++], fb);
 		}
 
 #if( configCALIBRATE_SENSOR == 1 )

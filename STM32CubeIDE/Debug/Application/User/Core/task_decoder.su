@@ -1,4 +1,4 @@
-../Application/User/Core/task_decoder.c:128:13:decode_evt2	8	static
+../Application/User/Core/task_decoder.c:132:13:decode_evt2	8	static
 ../Application/User/Core/task_decoder.c:58:6:disable_hot_pixels	72	static
-../Application/User/Core/task_decoder.c:176:10:dcmi_dma_write_idx	0	static
-../Application/User/Core/task_decoder.c:186:6:task_evt_decoder	40	static
+../Application/User/Core/task_decoder.c:175:10:dcmi_dma_write_idx	0	static
+../Application/User/Core/task_decoder.c:185:6:task_evt_decoder	48	static
