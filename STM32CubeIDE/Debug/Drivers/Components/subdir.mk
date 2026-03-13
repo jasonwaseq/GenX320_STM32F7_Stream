@@ -5,13 +5,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-C:/Users/jason/Documents/GenX320_stream/Drivers/BSP/Components/ft5336/ft5336.c 
+C:/Users/jason/Documents/GenX320_stream/Drivers/BSP/Components/ft5336/ft5336.c \
+C:/Users/jason/Documents/GenX320_stream/Drivers/BSP/Components/lan8742/lan8742.c
 
 C_DEPS += \
-./Drivers/Components/ft5336.d 
+./Drivers/Components/ft5336.d \
+./Drivers/Components/lan8742/lan8742.d
 
 OBJS += \
-./Drivers/Components/ft5336.o 
+./Drivers/Components/ft5336.o \
+./Drivers/Components/lan8742/lan8742.o
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -20,8 +23,12 @@ Drivers/Components/ft5336.o: C:/Users/jason/Documents/GenX320_stream/Drivers/BSP
 
 clean: clean-Drivers-2f-Components
 
+Drivers/Components/lan8742/lan8742.o: C:/Users/jason/Documents/GenX320_stream/Drivers/BSP/Components/lan8742/lan8742.c Drivers/Components/subdir.mk
+	arm-none-eabi-gcc "$<" -mcpu=cortex-m7 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DUSE_BPP=16 -DSTM32F746xx -DDEBUG -c -I../../Core/Inc -I../../Drivers/STM32F7xx_HAL_Driver/Inc -I../../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../../Drivers/CMSIS/Include -I../../Drivers/BSP/Components/lan8742 -I../../LWIP/App -I../../LWIP/Target -I../../Middlewares/Third_Party/LwIP/src/include -I../../Middlewares/Third_Party/LwIP/system -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
+
 clean-Drivers-2f-Components:
-	-$(RM) ./Drivers/Components/ft5336.cyclo ./Drivers/Components/ft5336.d ./Drivers/Components/ft5336.o ./Drivers/Components/ft5336.su
+	-$(RM) ./Drivers/Components/ft5336.cyclo ./Drivers/Components/ft5336.d ./Drivers/Components/ft5336.o ./Drivers/Components/ft5336.su \
+	./Drivers/Components/lan8742/lan8742.cyclo ./Drivers/Components/lan8742/lan8742.d ./Drivers/Components/lan8742/lan8742.o ./Drivers/Components/lan8742/lan8742.su
 
 .PHONY: clean-Drivers-2f-Components
 

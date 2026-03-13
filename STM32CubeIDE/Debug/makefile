@@ -11,6 +11,9 @@ RM := rm -rf
 -include sources.mk
 -include Middlewares/FreeRTOS/subdir.mk
 -include Middlewares/USB_Device_Library/subdir.mk
+-include Middlewares/LwIP/subdir.mk
+-include LWIP/App/subdir.mk
+-include LWIP/Target/subdir.mk
 -include Application/User/USB_DEVICE/App/subdir.mk
 -include Application/User/USB_DEVICE/Target/subdir.mk
 -include Drivers/product-genx-ctrl/src/subdir.mk

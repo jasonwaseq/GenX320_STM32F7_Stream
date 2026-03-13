@@ -61,7 +61,8 @@ _Min_Stack_Size = 0xa00 ;	/* required amount of stack */
 /* Memories definition */
 MEMORY
 {
-  RAM     (xrw)  : ORIGIN = 0x20000000,  LENGTH = 320K
+  RAM     (xrw)  : ORIGIN = 0x20000000,  LENGTH = 0x4C000   /* 304K, leaves room for ETH descriptors */
+  ETHDESC (xrw)  : ORIGIN = 0x2004C000,  LENGTH = 0x400     /* 1K at fixed address for ETH DMA descriptors */
   FLASH   (rx)   : ORIGIN = 0x8000000,   LENGTH = 1024K
   QUADSPI (r)    : ORIGIN = 0x90000000,  LENGTH = 16M
   SDRAM   (xrw)  : ORIGIN = 0xC0000000,  LENGTH = 8M
@@ -200,24 +201,40 @@ SECTIONS
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 
+  /* ETH DMA descriptors at fixed address 0x2004C000.
+     Non-cacheable MPU region must cover this address (see MPU_Config in main.c). */
+  .RxDecripSection (NOLOAD) :
+  {
+    . = ALIGN(32);
+    *(.RxDecripSection)
+    . = ALIGN(32);
+  } >ETHDESC
+
+  .TxDecripSection (NOLOAD) :
+  {
+    . = ALIGN(32);
+    *(.TxDecripSection)
+    . = ALIGN(32);
+  } >ETHDESC
+
   BufferSection (NOLOAD) :
   {
     *(TouchGFX_Framebuffer TouchGFX_Framebuffer.*)
     *(.gnu.linkonce.r.*)
     . = ALIGN(0x4);
-    
+
     *(Video_RGB_Buffer Video_RGB_Buffer.*)
     *(.gnu.linkonce.r.*)
     . = ALIGN(0x4);
-    
+
     *(L1_Frame_Buffers L1_Frame_Buffers.*)
     *(.gnu.linkonce.r.*)
     . = ALIGN(0x4);
-    
+
     *(Tensor_Buffers Tensor_Buffers.*)
     *(.gnu.linkonce.r.*)
     . = ALIGN(0x4);
-      
+
   } >SDRAM
 
   ExtFlashSection :

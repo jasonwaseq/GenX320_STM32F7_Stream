@@ -1,4 +1,3 @@
-
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************
@@ -21,15 +20,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "lwip.h"
 #include "app_touchgfx.h"
 #include "usb_device.h"
-#include "task_decoder.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stm32746g_discovery_qspi.h>
 #include <touchgfx/hal/Config.hpp>
 #include "task_usb_enum.h"
+#include "task_eth_stream.h"
 
 /* USER CODE END Includes */
 
@@ -139,16 +139,6 @@ const osThreadAttr_t Led_Tracking_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal1,
 };
-
-// for usb streaming
-osThreadId_t UsbTxHandle;
-const osThreadAttr_t UsbTx_attributes = {
-  .name = "UsbTx",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityBelowNormal
-};
-// end usb streaming
-
 /* Definitions for tskCtlUpdateFb */
 osMutexId_t tskCtlUpdateFbHandle;
 const osMutexAttr_t tskCtlUpdateFb_attributes = {
@@ -180,6 +170,21 @@ const osSemaphoreAttr_t Led_Tracking_Semph_attributes = {
   .name = "Led_Tracking_Semph"
 };
 /* USER CODE BEGIN PV */
+/* Definitions for UsbTx */
+osThreadId_t UsbTxHandle;
+const osThreadAttr_t UsbTx_attributes = {
+  .name = "UsbTx",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for EthTx */
+osThreadId_t EthTxHandle;
+const osThreadAttr_t EthTx_attributes = {
+  .name = "EthTx",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityNormal3,
+};
+
 static FMC_SDRAM_CommandTypeDef Command;
 
 /* I2C driver */
@@ -519,12 +524,10 @@ int main(void)
   /* creation of Led_Tracking */
   Led_TrackingHandle = osThreadNew(Led_Tracking_Task, NULL, &Led_Tracking_attributes);
 
-
-
   /* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
-  //for usb
   UsbTxHandle = osThreadNew(task_usb_tx, NULL, &UsbTx_attributes);
+  EthTxHandle = osThreadNew(task_eth_stream, NULL, &EthTx_attributes);
 
   /* USER CODE END RTOS_THREADS */
 
@@ -1180,9 +1183,9 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOJ_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -1302,9 +1305,11 @@ static void MX_GPIO_Init(void)
 void ESP_LPW_Task(void *argument)
 {
   /* init code for USB_DEVICE */
-  //MX_USB_DEVICE_Init();
+  /* USB FS is initialized once in main() before scheduler start. */
+
+  /* NOTE: MX_LWIP_Init() moved to task_eth_stream so ETH failures
+   * cannot affect this task or the display pipeline. */
   /* USER CODE BEGIN 5 */
-//	MX_USB_DEVICE_Init();
 	psee_esp_lpw_task();
 
 
@@ -1422,6 +1427,24 @@ void MPU_Config(void)
   MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** ETH DMA descriptor region at 0x2004C000 (1KB):
+   *  Must be non-cacheable, non-bufferable so the DMA engine and CPU
+   *  see the same descriptor values without explicit cache maintenance.
+   */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+  MPU_InitStruct.BaseAddress = 0x2004C000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_1KB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
   /* Enables the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 

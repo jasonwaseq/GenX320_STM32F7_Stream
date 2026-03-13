@@ -25,6 +25,7 @@ Application/User/Core/main.o: \
  ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_crc_ex.h \
  ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma2d.h \
  ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dcmi.h \
+ ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h \
  ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash.h \
  ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h \
  ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_sdram.h \
@@ -70,13 +71,49 @@ Application/User/Core/main.o: \
  C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/evt_2_0.h \
  C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/Core/task_frame_buffer.h \
  C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/tasks.h \
+ ../../LWIP/App/lwip.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/opt.h \
+ ../../LWIP/Target/lwipopts.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/debug.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/arch.h \
+ ../../Middlewares/Third_Party/LwIP/system/arch/cc.h \
+ ../../Middlewares/Third_Party/LwIP/system/arch/cpu.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/mem.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/memp.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/priv/memp_std.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/priv/memp_priv.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/priv/mem_priv.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/stats.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/netif/etharp.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/etharp.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/pbuf.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/err.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/ip4_addr.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/def.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/netif.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/ip_addr.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/ip6_addr.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/def.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/ip4.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ip4.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ethernet.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ieee.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/prot/etharp.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/netif/ethernet.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/dhcp.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/timeouts.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/sys.h \
+ ../../Middlewares/Third_Party/LwIP/system/arch/sys_arch.h \
+ ../../LWIP/Target/ethernetif.h \
+ ../../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h \
  ../../TouchGFX/App/app_touchgfx.h ../../USB_DEVICE/App/usb_device.h \
  ../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../../USB_DEVICE/Target/usbd_conf.h \
  ../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_qspi.h \
  ../../Drivers/BSP/STM32746G-Discovery/../Components/n25q128a/n25q128a.h \
  ../../Middlewares/ST/touchgfx/framework/include/touchgfx/hal/Config.hpp \
- C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/Core/task_usb_enum.h
+ C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/Core/task_usb_enum.h \
+ C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/Core/task_eth_stream.h
 ../../Core/Inc/main.h:
 ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../../Core/Inc/stm32f7xx_hal_conf.h:
@@ -102,6 +139,7 @@ Application/User/Core/main.o: \
 ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_crc_ex.h:
 ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma2d.h:
 ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dcmi.h:
+../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h:
 ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash.h:
 ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h:
 ../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_sdram.h:
@@ -147,6 +185,41 @@ C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/Core/task_
 C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/evt_2_0.h:
 C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/Core/task_frame_buffer.h:
 C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/tasks.h:
+../../LWIP/App/lwip.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/opt.h:
+../../LWIP/Target/lwipopts.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/debug.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/arch.h:
+../../Middlewares/Third_Party/LwIP/system/arch/cc.h:
+../../Middlewares/Third_Party/LwIP/system/arch/cpu.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/mem.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/memp.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/priv/memp_std.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/priv/memp_priv.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/priv/mem_priv.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/stats.h:
+../../Middlewares/Third_Party/LwIP/src/include/netif/etharp.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/etharp.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/pbuf.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/err.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/ip4_addr.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/def.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/netif.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/ip_addr.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/ip6_addr.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/def.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/ip4.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ip4.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ethernet.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ieee.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/prot/etharp.h:
+../../Middlewares/Third_Party/LwIP/src/include/netif/ethernet.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/dhcp.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/timeouts.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/sys.h:
+../../Middlewares/Third_Party/LwIP/system/arch/sys_arch.h:
+../../LWIP/Target/ethernetif.h:
+../../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h:
 ../../TouchGFX/App/app_touchgfx.h:
 ../../USB_DEVICE/App/usb_device.h:
 ../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
@@ -155,3 +228,4 @@ C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/tasks.h:
 ../../Drivers/BSP/STM32746G-Discovery/../Components/n25q128a/n25q128a.h:
 ../../Middlewares/ST/touchgfx/framework/include/touchgfx/hal/Config.hpp:
 C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/Core/task_usb_enum.h:
+C:/Users/jason/Documents/GenX320_stream/STM32CubeIDE/Application/User/Core/task_eth_stream.h:

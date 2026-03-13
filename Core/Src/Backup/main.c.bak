@@ -1,3 +1,4 @@
+
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************
@@ -21,11 +22,14 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "app_touchgfx.h"
+#include "usb_device.h"
+#include "task_decoder.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stm32746g_discovery_qspi.h>
 #include <touchgfx/hal/Config.hpp>
+#include "task_usb_enum.h"
 
 /* USER CODE END Includes */
 
@@ -83,8 +87,6 @@ QSPI_HandleTypeDef hqspi;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 
-PCD_HandleTypeDef hpcd_USB_OTG_FS;
-
 DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 SDRAM_HandleTypeDef hsdram1;
 
@@ -137,6 +139,16 @@ const osThreadAttr_t Led_Tracking_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal1,
 };
+
+// for usb streaming
+osThreadId_t UsbTxHandle;
+const osThreadAttr_t UsbTx_attributes = {
+  .name = "UsbTx",
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal
+};
+// end usb streaming
+
 /* Definitions for tskCtlUpdateFb */
 osMutexId_t tskCtlUpdateFbHandle;
 const osMutexAttr_t tskCtlUpdateFb_attributes = {
@@ -209,7 +221,6 @@ static void MX_LTDC_Init(void);
 static void MX_DMA2D_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
-static void MX_USB_OTG_FS_PCD_Init(void);
 void ESP_LPW_Task(void *argument);
 extern void TouchGFX_Task(void *argument);
 void Task_Update_Fb(void *argument);
@@ -251,14 +262,11 @@ void HAL_DMA_MasterCpltCallback(DMA_HandleTypeDef *hdma)
 /*
 * @brief  For Debug Communication
 */
-PUTCHAR_PROTOTYPE
+/*PUTCHAR_PROTOTYPE
 {
-#if defined(HAL_UART_MODULE_ENABLED)
-	extern UART_HandleTypeDef huart1;
 	HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
-#endif
 	return ch;
-}
+}*/
 
 /*
  * @brief Call back function for register reload
@@ -419,7 +427,6 @@ int main(void)
   MX_DMA2D_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
-  MX_USB_OTG_FS_PCD_Init();
   MX_TouchGFX_Init();
   /* Call PreOsInit function */
   MX_TouchGFX_PreOSInit();
@@ -427,7 +434,7 @@ int main(void)
 
   /* Change Systick priority to 4 to use HAL_DELAY() */
   HAL_InitTick(4);
-
+  MX_USB_DEVICE_Init();
   /* Reset the display frame buffers */
   reset_buffers();
   reset_frame_buffers();
@@ -445,7 +452,8 @@ int main(void)
 
   /* Change Systick priority back to 15 */
   HAL_InitTick(15);
-
+  /* Start USB CDC device early (before scheduler) */
+  //MX_USB_DEVICE_Init();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -511,8 +519,12 @@ int main(void)
   /* creation of Led_Tracking */
   Led_TrackingHandle = osThreadNew(Led_Tracking_Task, NULL, &Led_Tracking_attributes);
 
+
+
   /* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
+  //for usb
+  UsbTxHandle = osThreadNew(task_usb_tx, NULL, &UsbTx_attributes);
 
   /* USER CODE END RTOS_THREADS */
 
@@ -1016,41 +1028,6 @@ static void MX_TIM2_Init(void)
 }
 
 /**
-  * @brief USB_OTG_FS Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USB_OTG_FS_PCD_Init(void)
-{
-
-  /* USER CODE BEGIN USB_OTG_FS_Init 0 */
-
-  /* USER CODE END USB_OTG_FS_Init 0 */
-
-  /* USER CODE BEGIN USB_OTG_FS_Init 1 */
-
-  /* USER CODE END USB_OTG_FS_Init 1 */
-  hpcd_USB_OTG_FS.Instance = USB_OTG_FS;
-  hpcd_USB_OTG_FS.Init.dev_endpoints = 6;
-  hpcd_USB_OTG_FS.Init.speed = PCD_SPEED_FULL;
-  hpcd_USB_OTG_FS.Init.dma_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
-  hpcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.vbus_sensing_enable = ENABLE;
-  hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
-  if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USB_OTG_FS_Init 2 */
-
-  /* USER CODE END USB_OTG_FS_Init 2 */
-
-}
-
-/**
   * Enable DMA controller clock
   * Configure DMA for memory to memory transfers
   *   hdma_memtomem_dma2_stream0
@@ -1324,9 +1301,12 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_ESP_LPW_Task */
 void ESP_LPW_Task(void *argument)
 {
+  /* init code for USB_DEVICE */
+  //MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
-
+//	MX_USB_DEVICE_Init();
 	psee_esp_lpw_task();
+
 
   /* USER CODE END 5 */
 }
